@@ -26,10 +26,10 @@ The following modification have been add to the template:
 More possible improvements are presented in the related report.
 
 ![Start](screenshot_start.png)
-The sample GUI without connection to the simulator
+Figure 1: The sample GUI without connection to the simulator
 
 ![Sample](screenshot.png)
-The sample GUI without once connected
+Figure 2:The sample GUI without once connected
 
 ![Result](screenshot_final.png)
-The GUI with new implementations
+Figure 3: The GUI with new implementations

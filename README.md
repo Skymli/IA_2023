@@ -1,5 +1,8 @@
-# EPFL Industrial Automation Lecture (CS-487)
-This repository contains sample code for the group project of the [Industrial Automation (CS-487)](https://edu.epfl.ch/coursebook/en/industrial-automation-CS-487) lecture at EPFL.
+# EPFL Industrial Automation Lecture (CS-487) / Group 3
+This repository contains the code for the group project of the [Industrial Automation (CS-487)](https://edu.epfl.ch/coursebook/en/industrial-automation-CS-487) lecture at EPFL for the group 3.
+
+The original repository can be found [here](https://github.com/phsommer/epfl-cs-487-paint-mixing-plant).
+
 
 ## Introduction
 The project considers a paint production plant. A paint mixing station is composed of 5 paint tanks with unique colors (cyan, magenta, yellow, black and white color) and one mixing tank, as shown in the screenshot below. Each paint tank is controlled via an output valve, and the mixing tank can be emptied via a dedicated pump and output valve. Each tank has a level sensor measuring the level of the paint inside in a tank, as well as a flow meter measuring the paint outflow.

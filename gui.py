@@ -18,6 +18,26 @@ TANGO_ATTRIBUTE_COLOR = "color"
 TANGO_COMMAND_FILL = "Fill"
 TANGO_COMMAND_FLUSH = "Flush"
 
+class AlarmWidget(QWidget):
+    def __init__(self,name):
+        super().__init__()
+        self.name = name
+        #self.layout = QVBoxLayout()
+        #self.title_label = QLabel(self.name)
+        #self.title_label.setStyleSheet("QLabel {font-size: 20px;}")
+        #self.layout.addWidget(self.title_label)
+        # Alarm
+        #self.alarm_label = QLabel("No alarm")
+        #self.alarm_label.setStyleSheet("QWidget {background-color: white;}")
+        #self.layout.addWidget(self.alarm_label)
+        
+
+    
+
+    
+        
+        
+
 
 class TankWidget(QWidget):
     """
@@ -111,6 +131,18 @@ class PaintTankWidget(QWidget):
         self.worker.level.done.connect(self.setLevel)
         self.worker.flow.done.connect(self.setFlow)
         self.worker.color.done.connect(self.setColor)
+        self.worker.level.done.connect(self.setAlarm)
+        
+        # Alarm widget
+        self.alarm = AlarmWidget(name)
+        self.title_label = QLabel(name)
+        self.title_label.setStyleSheet("QLabel {font-size: 20px;}")
+        self.layout.addWidget(self.title_label)
+        self.alarm_label = QLabel("No alarm")
+        self.alarm_label.setStyleSheet("QWidget {background-color: white;}")
+        self.layout.addWidget(self.alarm_label)
+        
+        
 
         if fill_button:
             button = QPushButton('Fill', self)
@@ -126,6 +158,9 @@ class PaintTankWidget(QWidget):
         # tank widget
         self.tank = TankWidget(width)
         self.layout.addWidget(self.tank, 5)
+
+        
+
 
         # slider for the valve
         self.slider = QSlider(Qt.Horizontal, self)
@@ -183,6 +218,35 @@ class PaintTankWidget(QWidget):
         self.label_level.setText("Level: %.1f %%" % (level * 100))
         self.tank.update()
 
+    def setAlarm(self, level):
+        cond = ["low","lower","Empty"]
+        if self.name == "mixer":
+            level = 1.0-level
+            cond = ["high","higher","Full"]
+        if level == 0.0:
+            self.update_alarm_description("Alarm: Tank "+cond[2],"high")
+        elif level < 0.1:
+            self.update_alarm_description("Alarm: Very "+cond[0]+" level","high")
+        elif level < 0.2:
+            self.update_alarm_description("Alarm: "+cond[0]+" level","medium")
+        elif level < 0.5:
+            self.update_alarm_description("Alarm: Level "+cond[1]+" than 50%","low")
+        else:
+            self.update_alarm_description("No alarm","ok")
+        self.alarm.update()
+
+    def update_alarm_description(self, description,severity):
+        self.alarm_label.setText(description)
+        if severity == "low":
+            self.alarm_label.setStyleSheet("QWidget {background-color: yellow;}")
+        elif severity == "medium":
+            self.alarm_label.setStyleSheet("QWidget {background-color: orange;}")
+        elif severity == "high":
+            self.alarm_label.setStyleSheet("QWidget {background-color: red;}")
+        else:
+            self.alarm_label.setStyleSheet("QWidget {background-color: white;}")
+        
+
     def setValve(self, valve):
         """
         set the value of the valve label
@@ -226,13 +290,14 @@ class ColorMixingPlantWindow(QMainWindow):
     def __init__(self):
         super().__init__()
         self.setWindowTitle("Color Mixing Plant Simulator - EPFL CS-487")
-        self.setMinimumSize(900, 800)
+        self.setMinimumSize(1200, 800)
 
         # Create a vertical layout
         vbox = QVBoxLayout()
 
         # Create a horizontal layout
         hbox = QHBoxLayout()
+        Hbox = QHBoxLayout()
 
         self.window = QWidget()
         self.setCentralWidget(self.window)
@@ -243,16 +308,19 @@ class ColorMixingPlantWindow(QMainWindow):
                       "black": PaintTankWidget("black", width=150, fill_button=True),
                       "white": PaintTankWidget("white", width=150, fill_button=True),
                       "mixer": PaintTankWidget("mixer", width=860, flush_button=True)}
+        
 
         hbox.addWidget(self.tanks["cyan"])
         hbox.addWidget(self.tanks["magenta"])
         hbox.addWidget(self.tanks["yellow"])
         hbox.addWidget(self.tanks["black"])
         hbox.addWidget(self.tanks["white"])
+        
 
         vbox.addLayout(hbox)
 
         vbox.addWidget(self.tanks["mixer"])
+    
 
         self.window.setLayout(vbox)
 
